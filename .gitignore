@@ -31,3 +31,7 @@ build/
 .vscode/
 
 upload-dir/
+
+*.pdf
+
+generate-dir/

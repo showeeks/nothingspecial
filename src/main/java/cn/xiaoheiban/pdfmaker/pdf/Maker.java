@@ -10,33 +10,24 @@ import java.util.List;
 import java.util.Random;
 
 public class Maker {
+    private String filename;
     private String dest;
 
-    private String data;
+//    private String data;
 
     private String watermarkFilename;
 
-    public Maker(String filename, String data, String watermarkFilename) throws Exception {
+    public Maker(String filename, String watermarkFilename) {
+        this.filename = filename;
         this.dest = filename(5);
-        this.data = data;
         this.watermarkFilename = watermarkFilename;
-        java.util.List<String> values = new LinkedList<String>();
-        FileReader reader = new FileReader(data);
-        char[] buf = new char[1024];
-        int num = reader.read(buf);
-        if (num < 0 || num > 1024) {
-            throw new Exception("JSON 解析异常");
-        }
-        JSONObject json = new JSONObject(new String(buf, 0, num));
-        Iterator<String> fieldIt = json.keys();
-        List<String> fieldNames = new LinkedList<>();
-        fieldIt.forEachRemaining(obj -> {
-            values.add(json.getString(obj));
-            fieldNames.add(obj);
-        });
-        Document doc = new Document(filename);
-        doc.getMailMerge().execute(fieldNames.toArray(new String[0]), values.toArray());
-        doc.save(dest + ".docx");
+    }
+
+    public String generatePDF() throws Exception {
+        Document doc = new Document(this.filename);
+        insertWatermarkText(doc, this.watermarkFilename);
+        doc.save("generate-dir/" + this.dest + ".pdf");
+        return this.dest;
     }
 
     private static String filename(int length) {

@@ -3,6 +3,7 @@ package cn.xiaoheiban.pdfmaker;
 import java.io.IOException;
 import java.util.stream.Collectors;
 
+import cn.xiaoheiban.pdfmaker.pdf.Maker;
 import cn.xiaoheiban.pdfmaker.storage.StorageFileNotFoundException;
 import cn.xiaoheiban.pdfmaker.storage.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,21 +47,26 @@ public class ConvertController {
     @GetMapping("/files/{filename:.+}")
     @ResponseBody
     public ResponseEntity<Resource> serveFile(@PathVariable String filename) {
-
         Resource file = storageService.loadAsResource(filename);
         return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
                 "attachment; filename=\"" + file.getFilename() + "\"").body(file);
     }
 
+    @ResponseBody
     @PostMapping("/")
     public String handleFileUpload(@RequestParam("file") MultipartFile file,
                                    RedirectAttributes redirectAttributes) {
-
+        String filename = "Unsuccessful generation!";
         storageService.store(file);
         redirectAttributes.addFlashAttribute("message",
                 "You successfully uploaded " + file.getOriginalFilename() + "!");
-
-        return "redirect:/";
+        Maker maker = new Maker("upload-dir/" + file.getOriginalFilename(), "water.png");
+        try {
+            filename = maker.generatePDF();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return filename;
     }
 
     @ExceptionHandler(StorageFileNotFoundException.class)
