@@ -1,6 +1,9 @@
 package cn.xiaoheiban.pdfmaker;
 
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import cn.xiaoheiban.pdfmaker.pdf.Maker;
@@ -10,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -28,20 +32,21 @@ public class ConvertController {
 
     private final StorageService storageService;
 
+    private final AliyunOssUtils ossUtils;
+
     @Autowired
-    public ConvertController(StorageService storageService) {
+    public ConvertController(StorageService storageService, AliyunOssUtils ossUtils) {
         this.storageService = storageService;
+        this.ossUtils = ossUtils;
     }
 
     @GetMapping("/")
-    public String listUploadedFiles(Model model) throws IOException {
-
-        model.addAttribute("files", storageService.loadAll().map(
+    @ResponseBody
+    public List<String> listUploadedFiles(Model model) throws IOException {
+        return storageService.loadAll().map(
                 path -> MvcUriComponentsBuilder.fromMethodName(ConvertController.class,
                         "serveFile", path.getFileName().toString()).build().toString())
-                .collect(Collectors.toList()));
-
-        return "uploadForm";
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/files/{filename:.+}")
@@ -54,7 +59,7 @@ public class ConvertController {
 
     @ResponseBody
     @PostMapping("/")
-    public String handleFileUpload(@RequestParam("file") MultipartFile file,
+    public String handleFileUpload(@RequestParam("file") MultipartFile file, @RequestParam(name = "redirect-url", required = false) String redirectUrl,
                                    RedirectAttributes redirectAttributes) {
         String filename = "Unsuccessful generation!";
         storageService.store(file);
@@ -63,6 +68,7 @@ public class ConvertController {
         Maker maker = new Maker("upload-dir/" + file.getOriginalFilename(), "water.png");
         try {
             filename = maker.generatePDF();
+            ossUtils.upload(new File("generate-dir/" + filename + ".pdf"), filename);
         } catch (Exception e) {
             System.out.println(e);
         }

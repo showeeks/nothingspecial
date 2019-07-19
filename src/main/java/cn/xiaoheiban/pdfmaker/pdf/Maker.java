@@ -23,6 +23,11 @@ public class Maker {
         this.watermarkFilename = watermarkFilename;
     }
 
+    /**
+     *
+     * @return 文件名（不含后缀名）
+     * @throws Exception
+     */
     public String generatePDF() throws Exception {
         Document doc = new Document(this.filename);
         insertWatermarkText(doc, this.watermarkFilename);
