@@ -25,7 +25,7 @@ public class AliyunOssUtils {
         String accessKeySecret = aliyunOssProperties.getAccessKey();
         String bucketName = aliyunOssProperties.getBucket();
         OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
-        ossClient.putObject(bucketName, filename, file);
+        ossClient.putObject(bucketName, aliyunOssProperties.getDir() + filename, file);
         ossClient.shutdown();
         return filename;
     }

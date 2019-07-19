@@ -3,12 +3,16 @@ package cn.xiaoheiban.pdfmaker;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.http.HttpClient;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import cn.xiaoheiban.pdfmaker.pdf.Maker;
 import cn.xiaoheiban.pdfmaker.storage.StorageFileNotFoundException;
 import cn.xiaoheiban.pdfmaker.storage.StorageService;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -62,17 +66,25 @@ public class ConvertController {
     public String handleFileUpload(@RequestParam("file") MultipartFile file, @RequestParam(name = "redirect-url", required = false) String redirectUrl,
                                    RedirectAttributes redirectAttributes) {
         String filename = "Unsuccessful generation!";
-        storageService.store(file);
-        redirectAttributes.addFlashAttribute("message",
-                "You successfully uploaded " + file.getOriginalFilename() + "!");
-        Maker maker = new Maker("upload-dir/" + file.getOriginalFilename(), "water.png");
-        try {
-            filename = maker.generatePDF();
-            ossUtils.upload(new File("generate-dir/" + filename + ".pdf"), filename);
+        filename = Maker.filename(8) + ".pdf";
+        try{
+            storageService.store(file);
+            uploadFile(file.getOriginalFilename(), filename, redirectUrl);
         } catch (Exception e) {
             System.out.println(e);
         }
         return filename;
+    }
+
+    @Async
+    void uploadFile(String originalName, String genName, String callbackUrl) throws Exception {
+        Maker maker = new Maker("upload-dir/" + originalName, "water.png");
+        maker.generatePDF(genName);
+        ossUtils.upload(new File("generate-dir/" + genName), genName);
+        CloseableHttpClient httpClient = HttpClients.createDefault();
+        HttpPost post = new HttpPost(callbackUrl);
+        httpClient.execute(post);
+        httpClient.close();
     }
 
     @ExceptionHandler(StorageFileNotFoundException.class)

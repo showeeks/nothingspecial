@@ -1,41 +1,35 @@
 package cn.xiaoheiban.pdfmaker.pdf;
 
 import com.aspose.words.*;
-import org.json.JSONObject;
 
-import java.io.FileReader;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.io.FileNotFoundException;
 import java.util.Random;
 
 public class Maker {
     private String filename;
-    private String dest;
-
-//    private String data;
 
     private String watermarkFilename;
 
     public Maker(String filename, String watermarkFilename) {
         this.filename = filename;
-        this.dest = filename(5);
         this.watermarkFilename = watermarkFilename;
     }
 
     /**
      *
-     * @return 文件名（不含后缀名）
-     * @throws Exception
+     * @throws FileNotFoundException 无法打开文件时会抛出异常的
      */
-    public String generatePDF() throws Exception {
-        Document doc = new Document(this.filename);
-        insertWatermarkText(doc, this.watermarkFilename);
-        doc.save("generate-dir/" + this.dest + ".pdf");
-        return this.dest;
+    public void generatePDF(String filename) throws FileNotFoundException {
+        try {
+            Document doc = new Document(this.filename);
+            insertWatermarkText(doc, this.watermarkFilename);
+            doc.save("generate-dir/" + filename);
+        } catch (Exception e) {
+            throw new FileNotFoundException(e.getMessage());
+        }
     }
 
-    private static String filename(int length) {
+    public static String filename(int length) {
         String str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         Random random = new Random();
         StringBuffer sb = new StringBuffer();

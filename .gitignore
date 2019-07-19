@@ -35,3 +35,5 @@ upload-dir/
 *.pdf
 
 generate-dir/
+
+.git-ignore
