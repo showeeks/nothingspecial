@@ -6,17 +6,11 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>2.1.6.RELEASE</version>
-        <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>cn.xiaoheiban</groupId>
     <artifactId>pdfmaker</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0</version>
     <name>pdfmaker</name>
-    <description>Make PDF</description>
-
-    <properties>
-        <java.version>12</java.version>
-    </properties>
 
     <dependencies>
         <dependency>
@@ -59,13 +53,25 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>com.aspose.words</groupId>
+            <artifactId>aspose-cloud-storage</artifactId>
+            <version>1.0.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/words.jar</systemPath>
+        </dependency>
     </dependencies>
+
 
     <build>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <includeSystemScope>true</includeSystemScope>
+                </configuration>
             </plugin>
         </plugins>
     </build>

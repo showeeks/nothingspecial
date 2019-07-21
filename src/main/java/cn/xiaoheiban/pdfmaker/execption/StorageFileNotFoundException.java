@@ -1,6 +1,6 @@
-package cn.xiaoheiban.pdfmaker.storage;
+package cn.xiaoheiban.pdfmaker.execption;
 
-import cn.xiaoheiban.pdfmaker.storage.StorageException;
+
 
 public class StorageFileNotFoundException extends StorageException {
 

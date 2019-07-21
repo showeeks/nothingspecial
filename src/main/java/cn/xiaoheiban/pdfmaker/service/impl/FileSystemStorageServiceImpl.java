@@ -1,4 +1,4 @@
-package cn.xiaoheiban.pdfmaker.storage;
+package cn.xiaoheiban.pdfmaker.service.impl;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,6 +9,10 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.stream.Stream;
 
+import cn.xiaoheiban.pdfmaker.execption.StorageException;
+import cn.xiaoheiban.pdfmaker.execption.StorageFileNotFoundException;
+import cn.xiaoheiban.pdfmaker.storage.StorageProperties;
+import cn.xiaoheiban.pdfmaker.service.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -18,12 +22,12 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
-public class FileSystemStorageService implements StorageService {
+public class FileSystemStorageServiceImpl implements StorageService {
 
     private final Path rootLocation;
 
     @Autowired
-    public FileSystemStorageService(StorageProperties properties) {
+    public FileSystemStorageServiceImpl(StorageProperties properties) {
         this.rootLocation = Paths.get(properties.getLocation());
     }
 

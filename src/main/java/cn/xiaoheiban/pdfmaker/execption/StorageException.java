@@ -1,4 +1,4 @@
-package cn.xiaoheiban.pdfmaker.storage;
+package cn.xiaoheiban.pdfmaker.execption;
 
 public class StorageException extends RuntimeException {
 

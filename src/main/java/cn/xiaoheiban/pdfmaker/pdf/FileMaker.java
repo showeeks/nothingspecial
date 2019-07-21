@@ -5,12 +5,14 @@ import com.aspose.words.*;
 import java.io.FileNotFoundException;
 import java.util.Random;
 
-public class Maker {
+public class FileMaker {
     private String filename;
 
     private String watermarkFilename;
 
-    public Maker(String filename, String watermarkFilename) {
+    private static final String string_Num = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
+    public FileMaker(String filename, String watermarkFilename) {
         this.filename = filename;
         this.watermarkFilename = watermarkFilename;
     }
@@ -30,12 +32,12 @@ public class Maker {
     }
 
     public static String filename(int length) {
-        String str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
         Random random = new Random();
         StringBuffer sb = new StringBuffer();
         for (int i = 0; i < length; i++) {
             int number = random.nextInt(62);
-            sb.append(str.charAt(number));
+            sb.append(string_Num.charAt(number));
         }
         return sb.toString();
     }

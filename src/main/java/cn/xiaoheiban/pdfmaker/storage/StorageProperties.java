@@ -1,7 +1,6 @@
 package cn.xiaoheiban.pdfmaker.storage;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
 @ConfigurationProperties("storage")
 public class StorageProperties {

@@ -1,15 +1,13 @@
-package cn.xiaoheiban.pdfmaker;
+package cn.xiaoheiban.pdfmaker.controller;
 
 import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.net.http.HttpClient;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import cn.xiaoheiban.pdfmaker.pdf.Maker;
-import cn.xiaoheiban.pdfmaker.storage.StorageFileNotFoundException;
-import cn.xiaoheiban.pdfmaker.storage.StorageService;
+import cn.xiaoheiban.pdfmaker.component.AliOssComponent;
+import cn.xiaoheiban.pdfmaker.pdf.FileMaker;
+import cn.xiaoheiban.pdfmaker.execption.StorageFileNotFoundException;
+import cn.xiaoheiban.pdfmaker.service.StorageService;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -18,35 +16,28 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
-@Controller
+@RestController
 public class ConvertController {
 
     private final StorageService storageService;
 
-    private final AliyunOssUtils ossUtils;
+    private final AliOssComponent ossUtils;
 
     @Autowired
-    public ConvertController(StorageService storageService, AliyunOssUtils ossUtils) {
+    public ConvertController(StorageService storageService, AliOssComponent ossComponent) {
         this.storageService = storageService;
-        this.ossUtils = ossUtils;
+        this.ossUtils = ossComponent;
     }
 
     @GetMapping("/")
     @ResponseBody
-    public List<String> listUploadedFiles(Model model) throws IOException {
+    public List<String> listUploadedFiles() {
         return storageService.loadAll().map(
                 path -> MvcUriComponentsBuilder.fromMethodName(ConvertController.class,
                         "serveFile", path.getFileName().toString()).build().toString())
@@ -65,9 +56,9 @@ public class ConvertController {
     @PostMapping("/")
     public String handleFileUpload(@RequestParam("file") MultipartFile file, @RequestParam(name = "redirect-url", required = false) String redirectUrl,
                                    RedirectAttributes redirectAttributes) {
-        String filename = "Unsuccessful generation!";
-        filename = Maker.filename(8) + ".pdf";
-        try{
+        String filename = "";
+        filename = FileMaker.filename(8) + ".pdf";
+        try {
             storageService.store(file);
             uploadFile(file.getOriginalFilename(), filename, redirectUrl);
         } catch (Exception e) {
@@ -78,8 +69,8 @@ public class ConvertController {
 
     @Async
     void uploadFile(String originalName, String genName, String callbackUrl) throws Exception {
-        Maker maker = new Maker("upload-dir/" + originalName, "water.png");
-        maker.generatePDF(genName);
+        FileMaker fileMaker = new FileMaker("upload-dir/" + originalName, "water.png");
+        fileMaker.generatePDF(genName);
         ossUtils.upload(new File("generate-dir/" + genName), genName);
         CloseableHttpClient httpClient = HttpClients.createDefault();
         HttpPost post = new HttpPost(callbackUrl);

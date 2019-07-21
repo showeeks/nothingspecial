@@ -1,4 +1,4 @@
-package cn.xiaoheiban.pdfmaker.storage;
+package cn.xiaoheiban.pdfmaker.service;
 
 import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
@@ -6,9 +6,10 @@ import org.springframework.web.multipart.MultipartFile;
 import java.nio.file.Path;
 import java.util.stream.Stream;
 
+/**
+ * 文件处理类
+ */
 public interface StorageService {
-
-    void init();
 
     void store(MultipartFile file);
 
@@ -20,4 +21,5 @@ public interface StorageService {
 
     void deleteAll();
 
+    void init();
 }
