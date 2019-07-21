@@ -9,7 +9,7 @@ import java.util.stream.Stream;
 /**
  * 文件处理类
  */
-public interface StorageService {
+public interface FileSystemStorageService {
 
     void store(MultipartFile file);
 

@@ -1,18 +1,18 @@
-package cn.xiaoheiban.pdfmaker.pdf;
+package cn.xiaoheiban.pdfmaker.util;
 
 import com.aspose.words.*;
 
 import java.io.FileNotFoundException;
 import java.util.Random;
 
-public class FileMaker {
+public class FileMakerUtil {
     private String filename;
 
     private String watermarkFilename;
 
     private static final String string_Num = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
-    public FileMaker(String filename, String watermarkFilename) {
+    public FileMakerUtil(String filename, String watermarkFilename) {
         this.filename = filename;
         this.watermarkFilename = watermarkFilename;
     }
