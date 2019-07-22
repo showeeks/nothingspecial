@@ -23,3 +23,11 @@
 3. 上传完成后访问 callback-url
 
 ## 参数
+
+`applicaiton.properties` 中包含本地目录和oss目录的配置。
+
+## 部署
+
+`/tmp/pdfmake` 必须有读写的权限。
+
+该文件夹须有 `/tmp/pdfmake/generate-dir` 和 `/tmp/pdfmake/upload-dir` 这两个子文件夹。
