@@ -1,6 +1,6 @@
 package cn.xiaoheiban.pdfmaker.component;
 
-import cn.xiaoheiban.pdfmaker.config.AliOssConfig;
+import cn.xiaoheiban.pdfmaker.config.AliOssProperties;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
 import org.springframework.scheduling.annotation.Async;
@@ -15,20 +15,19 @@ import java.io.File;
 @Component
 public class AliOssComponent {
 
-    private final AliOssConfig aliOssConfig;
+    private final AliOssProperties aliOssProperties;
 
-    public AliOssComponent(AliOssConfig aliOssConfig) {
-        this.aliOssConfig = aliOssConfig;
+    public AliOssComponent(AliOssProperties aliOssProperties) {
+        this.aliOssProperties = aliOssProperties;
     }
 
-    @Async
     public String upload(File file, String filename) {
-        String endpoint = aliOssConfig.getEndpoint();
-        String accessKeyId = aliOssConfig.getAccessId();
-        String accessKeySecret = aliOssConfig.getAccessKey();
-        String bucketName = aliOssConfig.getBucket();
+        String endpoint = aliOssProperties.getEndpoint();
+        String accessKeyId = aliOssProperties.getAccessId();
+        String accessKeySecret = aliOssProperties.getAccessKey();
+        String bucketName = aliOssProperties.getBucket();
         OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
-        ossClient.putObject(bucketName, aliOssConfig.getDir() + filename, file);
+        ossClient.putObject(bucketName, aliOssProperties.getDir() + filename, file);
         ossClient.shutdown();
         return filename;
     }

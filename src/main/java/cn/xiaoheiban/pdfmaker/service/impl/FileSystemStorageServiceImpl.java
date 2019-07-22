@@ -26,6 +26,11 @@ public class FileSystemStorageServiceImpl implements FileSystemStorageService {
 
     private final Path rootLocation;
 
+    @Override
+    public String getRoot() {
+        return rootLocation.toString();
+    }
+
     @Autowired
     public FileSystemStorageServiceImpl(StorageProperties properties) {
         this.rootLocation = Paths.get(properties.getLocation());

@@ -31,31 +31,14 @@ public class ConvertController {
         this.ossFileService = ossFileService;
     }
 
-    @GetMapping("/")
-    @ResponseBody
-    public List<String> listUploadedFiles() {
-        return fileSystemStorageService.loadAll().map(
-                path -> MvcUriComponentsBuilder.fromMethodName(ConvertController.class,
-                        "serveFile", path.getFileName().toString()).build().toString())
-                .collect(Collectors.toList());
-    }
-
-    @GetMapping("/files/{filename:.+}")
-    @ResponseBody
-    public ResponseEntity<Resource> serveFile(@PathVariable String filename) {
-        Resource file = fileSystemStorageService.loadAsResource(filename);
-        return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
-                "attachment; filename=\"" + file.getFilename() + "\"").body(file);
-    }
-
     @ResponseBody
     @PostMapping("/")
-    public String handleFileUpload(@RequestParam("file") MultipartFile file, @RequestParam(name = "redirect-url", required = false) String redirectUrl) {
+    public String handleFileUpload(@RequestParam("file") MultipartFile file, @RequestParam(name = "callback-url", required = false) String redirectUrl) {
         String filename;
         filename = FileMakerUtil.filename(8) + ".pdf";
         try {
             fileSystemStorageService.store(file);
-            ossFileService.uploadFile(file.getOriginalFilename(), filename, redirectUrl);
+            ossFileService.generateAndUpload(file.getOriginalFilename(), filename, redirectUrl);
         } catch (Exception e) {
             System.out.println(e);
         }

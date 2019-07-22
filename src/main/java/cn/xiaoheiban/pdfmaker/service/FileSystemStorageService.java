@@ -11,6 +11,8 @@ import java.util.stream.Stream;
  */
 public interface FileSystemStorageService {
 
+    String getRoot();
+
     void store(MultipartFile file);
 
     Stream<Path> loadAll();

@@ -13,5 +13,5 @@ public interface OssFileService {
      * @param callbackUrl
      * @throws Exception
      */
-    void uploadFile(String originalName, String genName, String callbackUrl) throws Exception;
+    void generateAndUpload(String originalName, String genName, String callbackUrl) throws Exception;
 }

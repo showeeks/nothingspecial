@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ConfigurationProperties("aliyun.oss")
 @Data
-public class AliOssConfig {
+public class AliOssProperties {
     private String accessId;
 
     private String accessKey;
