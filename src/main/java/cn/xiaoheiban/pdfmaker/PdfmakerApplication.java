@@ -1,6 +1,6 @@
 package cn.xiaoheiban.pdfmaker;
 
-import cn.xiaoheiban.pdfmaker.storage.StorageProperties;
+import cn.xiaoheiban.pdfmaker.config.StorageProperties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;

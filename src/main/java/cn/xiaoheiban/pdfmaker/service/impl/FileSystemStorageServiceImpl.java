@@ -12,7 +12,7 @@ import java.util.stream.Stream;
 import cn.xiaoheiban.pdfmaker.execption.StorageException;
 import cn.xiaoheiban.pdfmaker.execption.StorageFileNotFoundException;
 import cn.xiaoheiban.pdfmaker.service.FileSystemStorageService;
-import cn.xiaoheiban.pdfmaker.storage.StorageProperties;
+import cn.xiaoheiban.pdfmaker.config.StorageProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;

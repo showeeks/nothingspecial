@@ -1,7 +1,7 @@
 package cn.xiaoheiban.pdfmaker.service.impl;
 
 import cn.xiaoheiban.pdfmaker.component.AliOssComponent;
-import cn.xiaoheiban.pdfmaker.storage.StorageProperties;
+import cn.xiaoheiban.pdfmaker.config.StorageProperties;
 import cn.xiaoheiban.pdfmaker.util.FileMakerUtil;
 import cn.xiaoheiban.pdfmaker.service.OssFileService;
 import org.apache.http.client.methods.HttpPost;
@@ -31,6 +31,7 @@ public class OssFileServiceImpl implements OssFileService {
     }
 
     @Async
+    @Override
     public void generateAndUpload(String originalName, String genName, String callbackUrl) throws Exception {
         FileMakerUtil fileMaker = new FileMakerUtil("upload-dir/" + originalName, "water.png");
         fileMaker.generatePDF(genName, storageProperties.getLocation() + "generate-dir/" + genName);
