@@ -22,6 +22,40 @@
 2. 生成出的文件上传到 oss
 3. 上传完成后访问 callback-url
 
+示例请求
+
+```http request
+POST http://localhost:8080/
+Accept: */*
+Cache-Control: no-cache
+Content-Type: multipart/form-data; boundary=boundary
+
+--boundary
+Content-Disposition: form-data; name="file"; filename="555.docx"
+
+< /Users/john/code/untitled/555.docx
+
+--boundary
+Content-Disposition: form-data; name="redirect-url"
+
+http://baidu.com
+
+--boundary--
+```
+
+示例响应
+
+```
+HTTP/1.1 200 
+Content-Type: text/plain;charset=UTF-8
+Content-Length: 12
+Date: Mon, 22 Jul 2019 03:36:55 GMT
+
+pQR0TuUd.pdf
+
+Response code: 200; Time: 22ms; Content length: 12 bytes
+```
+
 ## 参数
 
 `applicaiton.properties` 中包含本地目录和oss目录的配置。
