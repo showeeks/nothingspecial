@@ -55,27 +55,15 @@ public class ConvertController {
     @ResponseBody
     @PostMapping("/replace")
     public String handleReplace(@RequestParam("file") MultipartFile file, @RequestParam(name = "callback-url", required = false) String redirectUrl, @RequestParam("replacement") String replacement) {
-        String filename;
         String newfilename;
-        filename = FileMakerUtil.filename(8) + ".docx";
+        fileSystemStorageService.store(file);
         newfilename = FileMakerUtil.filename(8) + ".docx";
-        List<String> values = new LinkedList<String>();
-        JSONObject json = new JSONObject(replacement);
-        Iterator<String> fieldIt = json.keys();
-        List<String> fieldNames = new LinkedList<>();
-        fieldIt.forEachRemaining(obj -> {
-            values.add(json.getString(obj));
-            fieldNames.add(obj);
-        });
         try {
-            fileSystemStorageService.store(file);
-            Document doc = new Document("/tmp/pdfmake/upload-dir/" + file.getOriginalFilename());
-            doc.getMailMerge().execute(fieldNames.toArray(new String[0]), values.toArray());
-            doc.save("/tmp/pdfmake/generate-dir/" + newfilename);
+            ossFileService.replaceAndUpload(file.getOriginalFilename(), newfilename, redirectUrl, replacement);
         } catch (Exception e) {
             System.out.println(e);
         }
-        return filename;
+        return newfilename;
     }
 
 
