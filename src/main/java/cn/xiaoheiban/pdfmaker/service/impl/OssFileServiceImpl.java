@@ -8,6 +8,7 @@ import com.aspose.words.Document;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -64,6 +65,41 @@ public class OssFileServiceImpl implements OssFileService {
         }
         upload2Oss(genName, callbackUrl);
     }
+
+    private Object buildTable(String json) {
+        JSONObject jsonObject = new JSONObject(json);
+        String tableHTML = "<table><tr>";
+        JSONArray fieldNames = jsonObject.getJSONArray("field_name");
+        for (Object fieldName : fieldNames) {
+            tableHTML += "<td>";
+            tableHTML += (String) fieldName;
+            tableHTML += "</td>";
+        }
+        for (Object JSONObject)
+        tableHTML += "</tr>";
+        return tableHTML;
+    }
+
+    @Override
+    public void insertAndUpload(String originalName, String genName, String callbackUrl, String json) throws Exception {
+        List<String> values = new LinkedList<String>();
+        JSONObject jsonObject = new JSONObject(json);
+        Iterator<String> fieldIt = jsonObject.keys();
+        List<String> fieldNames = new LinkedList<>();
+        fieldIt.forEachRemaining(obj -> {
+            values.add(jsonObject.getString(obj));
+            fieldNames.add(obj);
+        });
+        try {
+            Document doc = new Document(storageProperties.getLocation() + "upload-dir/" + originalName);
+            doc.getMailMerge().execute(fieldNames.toArray(new String[0]), values.toArray());
+            doc.save(storageProperties.getLocation() + "generate-dir/" + genName);
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        upload2Oss(genName, callbackUrl);
+    }
+
 
     private void upload2Oss(String genName, String callbackUrl) throws IOException {
         ossComponent.upload(new File(storageProperties.getLocation() + "generate-dir/" + genName), genName);

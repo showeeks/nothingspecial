@@ -18,4 +18,6 @@ public interface OssFileService {
     void generateAndUpload(String originalName, String genName, String callbackUrl) throws Exception;
 
     void replaceAndUpload(String originalName, String genName, String callbackUrl, String json) throws Exception;
+
+    void insertAndUpload(String originalName, String genName, String callbackUrl, String json) throws Exception;
 }

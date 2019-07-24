@@ -66,6 +66,20 @@ public class ConvertController {
         return newfilename;
     }
 
+    @ResponseBody
+    @PostMapping("/insert_table")
+    public String handleInsert(@RequestParam("file") MultipartFile file, @RequestParam(name = "callback-url", required = false) String redirectUrl, @RequestParam("table") String table) {
+        String newfilename;
+        fileSystemStorageService.store(file);
+        newfilename = FileMakerUtil.filename(8) + ".docx";
+        try{
+            ossFileService.insertAndUpload(file.getOriginalFilename(), newfilename, redirectUrl, table);
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return newfilename;
+    }
+
 
     @ExceptionHandler(StorageFileNotFoundException.class)
     public ResponseEntity<?> handleStorageFileNotFound(StorageFileNotFoundException exc) {
