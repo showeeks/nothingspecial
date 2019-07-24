@@ -1,8 +1,6 @@
 package cn.xiaoheiban.pdfmaker.util;
 
-import cn.xiaoheiban.pdfmaker.storage.StorageProperties;
 import com.aspose.words.*;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.FileNotFoundException;
 import java.util.Random;
@@ -22,7 +20,7 @@ public class FileMakerUtil {
     /**
      * @throws FileNotFoundException 无法打开文件时会抛出异常的
      */
-    public void generatePDF(String filename, String destination) throws FileNotFoundException {
+    public void generatePDF(String destination) throws FileNotFoundException {
         try {
             Document doc = new Document(this.filename);
             insertWatermarkText(doc, this.watermarkFilename);
